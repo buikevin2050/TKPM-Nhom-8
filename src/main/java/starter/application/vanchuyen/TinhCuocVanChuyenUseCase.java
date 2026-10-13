@@ -4,18 +4,16 @@ import starter.domain.vanchuyen.KichThuoc;
 import starter.domain.vanchuyen.TinhKhoiLuongTheTich;
 import starter.domain.vanchuyen.XacDinhTrongLuongTinhCuoc;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Use Case Interactor (Control) điều phối nghiệp vụ tính cước vận chuyển cồng kềnh.
- * Tuân thủ Single Responsibility Principle (SRP) và Dependency Inversion Principle (DIP).
+ * Tuân thủ Single Responsibility Principle (SRP), Dependency Inversion Principle (DIP)
+ * và Open-Closed Principle (OCP) - tra cứu phụ phí dịch vụ gia tăng hoàn toàn qua ChinhSachCuocPort.
  */
 public class TinhCuocVanChuyenUseCase {
-
-    public static final double PHI_HUT_CHAN_KHONG = 15000.0;
-    public static final double PHI_GOI_QUA = 20000.0;
-    public static final double PHI_THIEP = 10000.0;
 
     private final ChinhSachCuocPort chinhSachCuoc;
     private final LuuTruCuocPhiPort khoLuuTru;
@@ -60,15 +58,33 @@ public class TinhCuocVanChuyenUseCase {
         // 3. Tính cước cơ bản qua Port
         double cuocPhiCoBan = chinhSachCuoc.tinhCuocCoBan(trongLuongTinhCuoc);
 
-        // 4. Tính mức cước chuẩn không hút để so sánh tiết kiệm
+        // 4. Mức cước chuẩn chưa hút chân không để tính tiền tiết kiệm
         double trongLuongChuaHut = Math.max(canNangThuc, khoiLuongTheTichBanDau);
         double cuocChuaHut = chinhSachCuoc.tinhCuocCoBan(trongLuongChuaHut);
 
-        // 5. Tính phụ phí dịch vụ gia tăng
-        double phuPhiHutChanKhong = coHutChanKhong ? PHI_HUT_CHAN_KHONG : 0.0;
-        double phuPhiGoiQua = coChonDichVu(yeuCau.getDanhSachDichVuGiaTang(), "GOI_QUA", "gói quà") ? PHI_GOI_QUA : 0.0;
-        double phuPhiThiep = coChonDichVu(yeuCau.getDanhSachDichVuGiaTang(), "THIEP", "thiệp") ? PHI_THIEP : 0.0;
-        double tongPhuPhi = phuPhiHutChanKhong + phuPhiGoiQua + phuPhiThiep;
+        // 5. Tính phụ phí dịch vụ gia tăng qua Port (Tuân thủ OCP - khử trùng lặp dịch vụ)
+        double tongPhuPhi = 0.0;
+        double phuPhiHutChanKhong = 0.0;
+        double phuPhiGoiQua = 0.0;
+        double phuPhiThiep = 0.0;
+
+        Set<String> cacDichVuDaTinh = new HashSet<>();
+        for (String dv : yeuCau.getDanhSachDichVuGiaTang()) {
+            if (dv == null) continue;
+            String keyChuan = dv.trim().toLowerCase().replace("_", "").replace(" ", "");
+            if (cacDichVuDaTinh.add(keyChuan)) {
+                double phi = chinhSachCuoc.layPhuPhiDichVu(dv);
+                tongPhuPhi += phi;
+
+                if (keyChuan.contains("hut") || keyChuan.contains("hút")) {
+                    phuPhiHutChanKhong = phi;
+                } else if (keyChuan.contains("goi") || keyChuan.contains("gói")) {
+                    phuPhiGoiQua = phi;
+                } else if (keyChuan.contains("thiep") || keyChuan.contains("thiệp")) {
+                    phuPhiThiep = phi;
+                }
+            }
+        }
 
         // 6. Tính tổng tiền cước và tiền tiết kiệm
         double tongTienCuoc = cuocPhiCoBan + tongPhuPhi;
@@ -100,15 +116,5 @@ public class TinhCuocVanChuyenUseCase {
         khoLuuTru.luuKetQua(ketQua);
 
         return ketQua;
-    }
-
-    private boolean coChonDichVu(List<String> danhSachDichVu, String maDichVu, String tuKhoa) {
-        if (danhSachDichVu == null) return false;
-        for (String dv : danhSachDichVu) {
-            if (dv != null && (dv.equalsIgnoreCase(maDichVu) || dv.toLowerCase().contains(tuKhoa.toLowerCase()))) {
-                return true;
-            }
-        }
-        return false;
     }
 }

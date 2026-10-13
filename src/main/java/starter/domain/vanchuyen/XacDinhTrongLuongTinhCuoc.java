@@ -4,7 +4,10 @@ import java.util.Objects;
 
 /**
  * Domain Policy xác định trọng lượng tính cước cuối cùng.
- * Quy tắc: Trọng lượng tính cước = Max(cân nặng thực tế, khối lượng thể tích hiệu lực).
+ * Quy tắc:
+ * - Nếu coHutChanKhong == true thì thể tích tính cước = thể tích ban đầu * 0.5.
+ * - Trọng lượng tính cước cuối cùng = Max(cân nặng thực tế, thể tích sau xử lý).
+ * - Làm tròn 1 chữ số thập phân để đảm bảo độ chính xác số thực.
  */
 public class XacDinhTrongLuongTinhCuoc {
 
@@ -24,7 +27,7 @@ public class XacDinhTrongLuongTinhCuoc {
      * @param kichThuoc       kích thước kiện hàng
      * @param canNangThuc     cân nặng thực tế (kg)
      * @param coHutChanKhong  có áp dụng dịch vụ hút chân không hay không
-     * @return trọng lượng tính cước (kg)
+     * @return trọng lượng tính cước (kg) làm tròn 1 chữ số thập phân
      */
     public double tinh(KichThuoc kichThuoc, double canNangThuc, boolean coHutChanKhong) {
         Objects.requireNonNull(kichThuoc, "Kích thước không được null");
@@ -32,8 +35,9 @@ public class XacDinhTrongLuongTinhCuoc {
             throw new IllegalArgumentException("Cân nặng thực tế không được âm");
         }
 
-        double khoiLuongTheTichHieuLuc = boTinhKhoiLuongTheTich.tinh(kichThuoc, coHutChanKhong);
-        return Math.max(canNangThuc, khoiLuongTheTichHieuLuc);
+        double theTichSauXuLy = boTinhKhoiLuongTheTich.tinh(kichThuoc, coHutChanKhong);
+        double trongLuong = Math.max(canNangThuc, theTichSauXuLy);
+        return Math.round(trongLuong * 10.0) / 10.0;
     }
 
     /**

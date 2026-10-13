@@ -43,10 +43,10 @@ Feature: Phân hệ 4: Tính cước vận chuyển cồng kềnh và dịch v�
       | 4,0              | 150       | 80         | 60        | 144,0                       | 72,0                        | 72,0                  | 735.000        | 390.000          | 345.000        |
 
   @NV11 @NV12 @Persistence
-  Scenario: Tính gói sinh nhật trọn bộ và xác nhận lưu kết quả qua ShippingStorePort
+  Scenario: Tính gói sinh nhật trọn bộ và xác nhận lưu kết quả qua LuuTruCuocPhiPort
     Given yêu cầu tính cước cho kiện thú bông nặng 2,0 kg, kích thước 100 cm x 60 cm x 40 cm
     And khách hàng chọn hút chân không, gói quà sinh nhật và thiệp chúc mừng
-    When hệ thống tính cước và lưu kết quả qua ShippingStorePort
+    When hệ thống tính cước và lưu kết quả qua LuuTruCuocPhiPort
     Then khối lượng thể tích sau hút chân không là 24,0 kg
     And trọng lượng tính cước là 24,0 kg
     And cước cơ sở là 135.000 VND
@@ -54,4 +54,4 @@ Feature: Phân hệ 4: Tính cước vận chuyển cồng kềnh và dịch v�
     And phụ phí gói quà là 20.000 VND
     And phụ phí thiệp chúc mừng là 10.000 VND
     And tổng chi phí là 180.000 VND
-    And ShippingStorePort nhận được kết quả đã lưu với tổng chi phí 180.000 VND
+    And LuuTruCuocPhiPort nhận được kết quả đã lưu với tổng chi phí 180.000 VND

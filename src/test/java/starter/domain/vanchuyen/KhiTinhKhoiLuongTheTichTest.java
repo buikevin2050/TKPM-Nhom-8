@@ -25,11 +25,11 @@ class KhiTinhKhoiLuongTheTichTest {
         void nemNgoaiLeKhiChieuDaiKhongHopLe() {
             assertThatThrownBy(() -> new KichThuoc(0, 20, 20))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Chiều dài phải lớn hơn 0");
+                    .hasMessageContaining("Kích thước phải lớn hơn 0");
 
             assertThatThrownBy(() -> new KichThuoc(-5, 20, 20))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Chiều dài phải lớn hơn 0");
+                    .hasMessageContaining("Kích thước phải lớn hơn 0");
         }
 
         @Test
@@ -37,11 +37,11 @@ class KhiTinhKhoiLuongTheTichTest {
         void nemNgoaiLeKhiChieuRongKhongHopLe() {
             assertThatThrownBy(() -> new KichThuoc(20, 0, 20))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Chiều rộng phải lớn hơn 0");
+                    .hasMessageContaining("Kích thước phải lớn hơn 0");
 
             assertThatThrownBy(() -> new KichThuoc(20, -10, 20))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Chiều rộng phải lớn hơn 0");
+                    .hasMessageContaining("Kích thước phải lớn hơn 0");
         }
 
         @Test
@@ -49,11 +49,11 @@ class KhiTinhKhoiLuongTheTichTest {
         void nemNgoaiLeKhiChieuCaoKhongHopLe() {
             assertThatThrownBy(() -> new KichThuoc(20, 20, 0))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Chiều cao phải lớn hơn 0");
+                    .hasMessageContaining("Kích thước phải lớn hơn 0");
 
             assertThatThrownBy(() -> new KichThuoc(20, 20, -1))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("Chiều cao phải lớn hơn 0");
+                    .hasMessageContaining("Kích thước phải lớn hơn 0");
         }
     }
 

@@ -4,7 +4,7 @@ import java.util.Objects;
 
 /**
  * Value Object biểu diễn kích thước 3 chiều của kiện hàng (cm).
- * Bất biến (immutable) và tự kiểm tra tính hợp lệ.
+ * Bất biến (immutable), không có phương thức setter và tự kiểm tra tính hợp lệ trong constructor.
  */
 public final class KichThuoc {
 
@@ -13,14 +13,8 @@ public final class KichThuoc {
     private final double chieuCao;
 
     public KichThuoc(double chieuDai, double chieuRong, double chieuCao) {
-        if (chieuDai <= 0) {
-            throw new IllegalArgumentException("Chiều dài phải lớn hơn 0");
-        }
-        if (chieuRong <= 0) {
-            throw new IllegalArgumentException("Chiều rộng phải lớn hơn 0");
-        }
-        if (chieuCao <= 0) {
-            throw new IllegalArgumentException("Chiều cao phải lớn hơn 0");
+        if (chieuDai <= 0 || chieuRong <= 0 || chieuCao <= 0) {
+            throw new IllegalArgumentException("Kích thước phải lớn hơn 0");
         }
         this.chieuDai = chieuDai;
         this.chieuRong = chieuRong;

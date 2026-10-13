@@ -31,15 +31,15 @@ class KhiTinhCuocVanChuyenUseCaseTest {
     void nemNgoaiLeKhiKichThuocKhongHopLe() {
         assertThatThrownBy(() -> new YeuCauTinhCuocDTO(-10, 20, 20, 2.0))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Chiều dài phải lớn hơn 0");
+                .hasMessageContaining("Kích thước phải lớn hơn 0");
 
         assertThatThrownBy(() -> new YeuCauTinhCuocDTO(20, 0, 20, 2.0))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Chiều rộng phải lớn hơn 0");
+                .hasMessageContaining("Kích thước phải lớn hơn 0");
 
         assertThatThrownBy(() -> new YeuCauTinhCuocDTO(20, 20, -5, 2.0))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Chiều cao phải lớn hơn 0");
+                .hasMessageContaining("Kích thước phải lớn hơn 0");
     }
 
     @Test

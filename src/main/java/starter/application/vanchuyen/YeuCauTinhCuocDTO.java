@@ -37,7 +37,7 @@ public final class YeuCauTinhCuocDTO {
         boolean coYeuCauHut = coHutChanKhong || chuaDichVuHut(dichVu);
 
         if (coYeuCauHut && !chuaDichVuHut(dichVu)) {
-            dichVu.add("HUT_CHAN_KHONG");
+            dichVu.add("HutChanKhong");
         }
 
         this.coHutChanKhong = coYeuCauHut;
@@ -53,14 +53,8 @@ public final class YeuCauTinhCuocDTO {
     }
 
     private void kiemTraHopLe(double chieuDai, double chieuRong, double chieuCao, double canNangThuc) {
-        if (chieuDai <= 0) {
-            throw new IllegalArgumentException("Chiều dài phải lớn hơn 0");
-        }
-        if (chieuRong <= 0) {
-            throw new IllegalArgumentException("Chiều rộng phải lớn hơn 0");
-        }
-        if (chieuCao <= 0) {
-            throw new IllegalArgumentException("Chiều cao phải lớn hơn 0");
+        if (chieuDai <= 0 || chieuRong <= 0 || chieuCao <= 0) {
+            throw new IllegalArgumentException("Kích thước phải lớn hơn 0");
         }
         if (canNangThuc < 0) {
             throw new IllegalArgumentException("Cân nặng thực tế không được âm");
@@ -69,8 +63,11 @@ public final class YeuCauTinhCuocDTO {
 
     private static boolean chuaDichVuHut(List<String> dichVu) {
         for (String dv : dichVu) {
-            if (dv != null && (dv.equalsIgnoreCase("HUT_CHAN_KHONG") || dv.toLowerCase().contains("hút chân không"))) {
-                return true;
+            if (dv != null) {
+                String clean = dv.trim().toLowerCase().replace("_", "").replace(" ", "");
+                if (clean.contains("hutchankhong") || clean.contains("hútchânkhông")) {
+                    return true;
+                }
             }
         }
         return false;

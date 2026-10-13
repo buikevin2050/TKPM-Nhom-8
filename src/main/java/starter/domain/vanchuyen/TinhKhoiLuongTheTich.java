@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Domain Service tính khối lượng thể tích của kiện hàng.
  * Công thức: (dài * rộng * cao) / 5000.0 (kg).
- * Hút chân không giảm 50% khối lượng thể tích quy đổi.
+ * Xử lý làm tròn số thực đến 1 chữ số thập phân để tránh sai số dấu phẩy động.
  */
 public class TinhKhoiLuongTheTich {
 
@@ -14,33 +14,40 @@ public class TinhKhoiLuongTheTich {
 
     /**
      * Tính khối lượng thể tích tiêu chuẩn từ kích thước kiện hàng.
+     * Làm tròn đến 1 chữ số thập phân.
      *
      * @param kichThuoc kích thước kiện hàng (dài, rộng, cao theo cm)
-     * @return khối lượng thể tích (kg)
+     * @return khối lượng thể tích (kg) làm tròn 1 chữ số thập phân
      */
     public double tinh(KichThuoc kichThuoc) {
         Objects.requireNonNull(kichThuoc, "Kích thước không được để trống (null)");
-        return kichThuoc.tinhTheTichCm3() / HE_SO_QUY_DOI;
+        double raw = (kichThuoc.getChieuDai() * kichThuoc.getChieuRong() * kichThuoc.getChieuCao()) / HE_SO_QUY_DOI;
+        return lamTron1ChuSo(raw);
     }
 
     /**
      * Tính khối lượng thể tích sau khi áp dụng dịch vụ hút chân không (giảm 50%).
      *
      * @param kichThuoc kích thước kiện hàng
-     * @return khối lượng thể tích sau hút (kg)
+     * @return khối lượng thể tích sau hút (kg) làm tròn 1 chữ số thập phân
      */
     public double tinhSauHutChanKhong(KichThuoc kichThuoc) {
-        return tinh(kichThuoc) * TI_LE_GIAM_THE_TICH_HUT;
+        double raw = tinh(kichThuoc) * TI_LE_GIAM_THE_TICH_HUT;
+        return lamTron1ChuSo(raw);
     }
 
     /**
      * Tính khối lượng thể tích dựa trên cờ có hút chân không hay không.
      *
-     * @param kichThuoc       kích thước kiện hàng
-     * @param coHutChanKhong  true nếu có áp dụng hút chân không
+     * @param kichThuoc      kích thước kiện hàng
+     * @param coHutChanKhong true nếu có áp dụng hút chân không
      * @return khối lượng thể tích hiệu lực (kg)
      */
     public double tinh(KichThuoc kichThuoc, boolean coHutChanKhong) {
         return coHutChanKhong ? tinhSauHutChanKhong(kichThuoc) : tinh(kichThuoc);
+    }
+
+    private double lamTron1ChuSo(double giaTri) {
+        return Math.round(giaTri * 10.0) / 10.0;
     }
 }
