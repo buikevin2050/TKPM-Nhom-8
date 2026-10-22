@@ -7,6 +7,7 @@ import starter.domain.vanchuyen.XacDinhTrongLuongTinhCuoc;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Use Case Interactor (Control) điều phối nghiệp vụ tính cước vận chuyển cồng kềnh.
@@ -14,6 +15,10 @@ import java.util.Set;
  * và Open-Closed Principle (OCP) - tra cứu phụ phí dịch vụ gia tăng hoàn toàn qua ChinhSachCuocPort.
  */
 public class TinhCuocVanChuyenUseCase {
+
+    public static final double TRAN_CHIEU_DAI_CM = 200.0;
+    public static final double TRAN_THE_TICH_KG = 100.0;
+    public static final String CANH_BAO_VUOT_TRAN = "Vượt quá kích thước tối đa của vận chuyển tiêu chuẩn, chuyển sang đường vận chuyển đặc biệt";
 
     private final ChinhSachCuocPort chinhSachCuoc;
     private final LuuTruCuocPhiPort khoLuuTru;
@@ -47,7 +52,7 @@ public class TinhCuocVanChuyenUseCase {
         double canNangThuc = yeuCau.getCanNangThuc();
         boolean coHutChanKhong = yeuCau.isCoHutChanKhong();
 
-        // 1. Tính toán các mức khối lượng thể tích
+        // 1. Tính toán các mức khối lượng thể tích quy đổi
         double khoiLuongTheTichBanDau = boTinhKhoiLuongTheTich.tinh(kichThuoc);
         double khoiLuongTheTichSauHut = boTinhKhoiLuongTheTich.tinhSauHutChanKhong(kichThuoc);
         double khoiLuongTheTich = boTinhKhoiLuongTheTich.tinh(kichThuoc, coHutChanKhong);
@@ -55,7 +60,7 @@ public class TinhCuocVanChuyenUseCase {
         // 2. Xác định trọng lượng tính cước
         double trongLuongTinhCuoc = boXacDinhTrongLuong.tinh(kichThuoc, canNangThuc, coHutChanKhong);
 
-        // 3. Tính cước cơ bản qua Port
+        // 3. Tính cước cơ bản qua Port theo biểu phí bậc thang
         double cuocPhiCoBan = chinhSachCuoc.tinhCuocCoBan(trongLuongTinhCuoc);
 
         // 4. Mức cước chuẩn chưa hút chân không để tính tiền tiết kiệm
@@ -90,10 +95,19 @@ public class TinhCuocVanChuyenUseCase {
         double tongTienCuoc = cuocPhiCoBan + tongPhuPhi;
         double tienTietKiem = coHutChanKhong ? Math.max(0.0, cuocChuaHut - (cuocPhiCoBan + phuPhiHutChanKhong)) : 0.0;
 
-        // 7. Tạo chuỗi tóm tắt
+        // 7. Kiểm tra kiện hàng vượt trần vận chuyển tiêu chuẩn
+        boolean vuotTran = (kichThuoc.getChieuDai() > TRAN_CHIEU_DAI_CM) || (khoiLuongTheTichBanDau > TRAN_THE_TICH_KG);
+        String canhBao = vuotTran ? CANH_BAO_VUOT_TRAN : null;
+
+        // 8. Sinh mã phiếu tính cước hệ thống
+        String maPhieuTinhCuoc = "VC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+
+        // 9. Tạo chuỗi tóm tắt
         String tomTat = String.format(
-                "Tính cước: Thể tích ban đầu: %.1f kg, Thể tích hiệu lực: %.1f kg, Trọng lượng tính cước: %.1f kg | Cước cơ bản: %.0f VND, Phụ phí: %.0f VND | Tổng cước: %.0f VND",
-                khoiLuongTheTichBanDau, khoiLuongTheTich, trongLuongTinhCuoc, cuocPhiCoBan, tongPhuPhi, tongTienCuoc
+                "Mã phiếu: %s | Thể tích ban đầu: %.2f kg, Thể tích hiệu lực: %.2f kg, Trọng lượng tính cước: %.2f kg | Cước cơ bản: %.0f VND, Phụ phí: %.0f VND | Tổng cước: %.0f VND%s",
+                maPhieuTinhCuoc, khoiLuongTheTichBanDau, khoiLuongTheTich, trongLuongTinhCuoc,
+                cuocPhiCoBan, tongPhuPhi, tongTienCuoc,
+                (canhBao != null ? " [CẢNH BÁO: " + canhBao + "]" : "")
         );
 
         KetQuaTinhCuocDTO ketQua = new KetQuaTinhCuocDTO(
@@ -109,10 +123,13 @@ public class TinhCuocVanChuyenUseCase {
                 phuPhiHutChanKhong,
                 phuPhiGoiQua,
                 phuPhiThiep,
-                tomTat
+                tomTat,
+                maPhieuTinhCuoc,
+                vuotTran,
+                canhBao
         );
 
-        // 8. Lưu kết quả qua Output Port
+        // 10. Lưu kết quả qua Output Port
         khoLuuTru.luuKetQua(ketQua);
 
         return ketQua;

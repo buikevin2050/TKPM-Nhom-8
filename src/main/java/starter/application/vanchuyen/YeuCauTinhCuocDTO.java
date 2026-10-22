@@ -54,10 +54,10 @@ public final class YeuCauTinhCuocDTO {
 
     private void kiemTraHopLe(double chieuDai, double chieuRong, double chieuCao, double canNangThuc) {
         if (chieuDai <= 0 || chieuRong <= 0 || chieuCao <= 0) {
-            throw new IllegalArgumentException("Kích thước phải lớn hơn 0");
+            throw new IllegalArgumentException("Kích thước kiện hàng phải lớn hơn 0");
         }
-        if (canNangThuc < 0) {
-            throw new IllegalArgumentException("Cân nặng thực tế không được âm");
+        if (canNangThuc <= 0) {
+            throw new IllegalArgumentException("Cân nặng thực tế phải lớn hơn 0");
         }
     }
 
@@ -65,7 +65,7 @@ public final class YeuCauTinhCuocDTO {
         for (String dv : dichVu) {
             if (dv != null) {
                 String clean = dv.trim().toLowerCase().replace("_", "").replace(" ", "");
-                if (clean.contains("hutchankhong") || clean.contains("hútchânkhông")) {
+                if (clean.contains("hutchankhong") || clean.contains("hútchânkhông") || clean.equals("hut")) {
                     return true;
                 }
             }

@@ -14,7 +14,7 @@ public final class KichThuoc {
 
     public KichThuoc(double chieuDai, double chieuRong, double chieuCao) {
         if (chieuDai <= 0 || chieuRong <= 0 || chieuCao <= 0) {
-            throw new IllegalArgumentException("Kích thước phải lớn hơn 0");
+            throw new IllegalArgumentException("Kích thước kiện hàng phải lớn hơn 0");
         }
         this.chieuDai = chieuDai;
         this.chieuRong = chieuRong;

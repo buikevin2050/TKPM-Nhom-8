@@ -31,13 +31,13 @@ public class XacDinhTrongLuongTinhCuoc {
      */
     public double tinh(KichThuoc kichThuoc, double canNangThuc, boolean coHutChanKhong) {
         Objects.requireNonNull(kichThuoc, "Kích thước không được null");
-        if (canNangThuc < 0) {
-            throw new IllegalArgumentException("Cân nặng thực tế không được âm");
+        if (canNangThuc <= 0) {
+            throw new IllegalArgumentException("Cân nặng thực tế phải lớn hơn 0");
         }
 
         double theTichSauXuLy = boTinhKhoiLuongTheTich.tinh(kichThuoc, coHutChanKhong);
         double trongLuong = Math.max(canNangThuc, theTichSauXuLy);
-        return Math.round(trongLuong * 10.0) / 10.0;
+        return Math.round(trongLuong * 100.0) / 100.0;
     }
 
     /**

@@ -21,6 +21,43 @@ public final class KetQuaTinhCuocDTO {
     private final double phuPhiGoiQua;
     private final double phuPhiThiep;
     private final String tomTat;
+    private final String maPhieuTinhCuoc;
+    private final boolean vuotTranVanChuyen;
+    private final String canhBao;
+
+    public KetQuaTinhCuocDTO(double khoiLuongTheTichBanDau,
+                            double khoiLuongTheTichSauHut,
+                            double khoiLuongTheTich,
+                            double trongLuongTinhCuoc,
+                            double cuocPhiCoBan,
+                            double tongPhuPhi,
+                            double tongTienCuoc,
+                            double cuocChuaHut,
+                            double tienTietKiem,
+                            double phuPhiHutChanKhong,
+                            double phuPhiGoiQua,
+                            double phuPhiThiep,
+                            String tomTat,
+                            String maPhieuTinhCuoc,
+                            boolean vuotTranVanChuyen,
+                            String canhBao) {
+        this.khoiLuongTheTichBanDau = khoiLuongTheTichBanDau;
+        this.khoiLuongTheTichSauHut = khoiLuongTheTichSauHut;
+        this.khoiLuongTheTich = khoiLuongTheTich;
+        this.trongLuongTinhCuoc = trongLuongTinhCuoc;
+        this.cuocPhiCoBan = cuocPhiCoBan;
+        this.tongPhuPhi = tongPhuPhi;
+        this.tongTienCuoc = tongTienCuoc;
+        this.cuocChuaHut = cuocChuaHut;
+        this.tienTietKiem = tienTietKiem;
+        this.phuPhiHutChanKhong = phuPhiHutChanKhong;
+        this.phuPhiGoiQua = phuPhiGoiQua;
+        this.phuPhiThiep = phuPhiThiep;
+        this.tomTat = tomTat;
+        this.maPhieuTinhCuoc = maPhieuTinhCuoc;
+        this.vuotTranVanChuyen = vuotTranVanChuyen;
+        this.canhBao = canhBao;
+    }
 
     public KetQuaTinhCuocDTO(double khoiLuongTheTichBanDau,
                             double khoiLuongTheTichSauHut,
@@ -35,19 +72,10 @@ public final class KetQuaTinhCuocDTO {
                             double phuPhiGoiQua,
                             double phuPhiThiep,
                             String tomTat) {
-        this.khoiLuongTheTichBanDau = khoiLuongTheTichBanDau;
-        this.khoiLuongTheTichSauHut = khoiLuongTheTichSauHut;
-        this.khoiLuongTheTich = khoiLuongTheTich;
-        this.trongLuongTinhCuoc = trongLuongTinhCuoc;
-        this.cuocPhiCoBan = cuocPhiCoBan;
-        this.tongPhuPhi = tongPhuPhi;
-        this.tongTienCuoc = tongTienCuoc;
-        this.cuocChuaHut = cuocChuaHut;
-        this.tienTietKiem = tienTietKiem;
-        this.phuPhiHutChanKhong = phuPhiHutChanKhong;
-        this.phuPhiGoiQua = phuPhiGoiQua;
-        this.phuPhiThiep = phuPhiThiep;
-        this.tomTat = tomTat;
+        this(khoiLuongTheTichBanDau, khoiLuongTheTichSauHut, khoiLuongTheTich, trongLuongTinhCuoc,
+                cuocPhiCoBan, tongPhuPhi, tongTienCuoc, cuocChuaHut, tienTietKiem,
+                phuPhiHutChanKhong, phuPhiGoiQua, phuPhiThiep, tomTat,
+                null, false, null);
     }
 
     public double getKhoiLuongTheTichBanDau() {
@@ -102,6 +130,18 @@ public final class KetQuaTinhCuocDTO {
         return tomTat;
     }
 
+    public String getMaPhieuTinhCuoc() {
+        return maPhieuTinhCuoc;
+    }
+
+    public boolean isVuotTranVanChuyen() {
+        return vuotTranVanChuyen;
+    }
+
+    public String getCanhBao() {
+        return canhBao;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,20 +159,23 @@ public final class KetQuaTinhCuocDTO {
                 Double.compare(that.phuPhiHutChanKhong, phuPhiHutChanKhong) == 0 &&
                 Double.compare(that.phuPhiGoiQua, phuPhiGoiQua) == 0 &&
                 Double.compare(that.phuPhiThiep, phuPhiThiep) == 0 &&
-                Objects.equals(tomTat, that.tomTat);
+                vuotTranVanChuyen == that.vuotTranVanChuyen &&
+                Objects.equals(tomTat, that.tomTat) &&
+                Objects.equals(canhBao, that.canhBao);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(khoiLuongTheTichBanDau, khoiLuongTheTichSauHut, khoiLuongTheTich,
                 trongLuongTinhCuoc, cuocPhiCoBan, tongPhuPhi, tongTienCuoc, cuocChuaHut,
-                tienTietKiem, phuPhiHutChanKhong, phuPhiGoiQua, phuPhiThiep, tomTat);
+                tienTietKiem, phuPhiHutChanKhong, phuPhiGoiQua, phuPhiThiep, tomTat,
+                vuotTranVanChuyen, canhBao);
     }
 
     @Override
     public String toString() {
         return tomTat != null ? tomTat :
-                String.format("KetQuaTinhCuocDTO{trongLuongTinhCuoc=%.1f kg, tongTienCuoc=%.0f VND}",
-                        trongLuongTinhCuoc, tongTienCuoc);
+                String.format("KetQuaTinhCuocDTO{trongLuongTinhCuoc=%.2f kg, tongTienCuoc=%.0f VND, maPhieu=%s}",
+                        trongLuongTinhCuoc, tongTienCuoc, maPhieuTinhCuoc);
     }
 }
